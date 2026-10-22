@@ -2,62 +2,73 @@ inventario = []
 categorias = []
 
 
+def mostrar_inventario():
+    for producto in inventario:
+        print(f"ID: {producto['ID']}- '{producto['nombre']}'")
+        print(f"En existencia: {producto['stock']}")
+        print(f"Costo: ${producto['costo']}")
+        print(f"Precio: ${producto['precio']}")
+        print(f"Categoria: {producto['categoria']}")
+        print("---------------------------------")
+
 def agregar_producto(productos):
     if productos > 0:
         for i in range(productos):
             producto = {}
-            validacion = True
 
             producto["ID"] = len(inventario ) + 1
-            producto["nombre"] = input(f"Ingrese el nombre del producto {i + 1}: ").strip()
-            while validacion == True:
+            while True:
+                nombre = input(f"Ingrese el nombre del producto {i + 1}: ").strip()
+                if len(nombre) > 0:
+                    producto["nombre"] = nombre
+                    break
+                print("El nombre no puede estar vacío. Inténtalo de nuevo.")
+            while True:
                 try:
                     producto["costo"] = float(input("Ingrese el costo del producto: $"))
-                    break;
+                    break
                 except ValueError:
                     print("Ingrese un numero valido")
-                    validacion = True
 
-            while validacion == True:
+
+            while True:
                 try:
                     producto["precio"] = float(input("Ingrese el precio: $"))
-                    break;
+                    break
                 except ValueError:
                     print("Ingrese un precio valido")
-                    validacion = True
-            while validacion == True:
+            while True:
                 try:
                     producto["stock"] = int(input("¿Cuantos deseas agregar?:"))
-                    break;
+                    break
                 except ValueError:
                     print("Esa cantidad no es valida")
-                    validacion = True
-            while validacion == True:
-                try:
-                    clasificar = input("¿A que categoria permanece?")
-                    if clasificar in categorias:
+            while True:
+                clasificar = input("¿A que categoria permanece?")
+                if clasificar in categorias:
+                    producto["categoria"] = clasificar
+                    break
+                else:
+                    mensaje = input("Esa categoria no existe, ¿Deseas agregarla?")
+                    if mensaje.lower() == "si":
+                        categorias.append(clasificar)
                         producto["categoria"] = clasificar
-                        break;
+                        print("Categoria agregada")
+                        break
                     else:
-                        mensaje = input("Esa categoria no existe, ¿Deseas agregarla?")
-                        if mensaje.lower() == "si":
-                            categorias.append(clasificar)
-                            producto["categoria"] = clasificar
-                            print("Categoria agregada")
-                            break;
-                        else:
-                            validacion = True
-                except:
-                    print("Oops! Algo salio mal")
-                    validacion = True
-            if producto["precio"] > 0 and len(producto["nombre"]) > 0 and producto["stock"] >= 0 and producto["costo"] >= 0:
+                        print("Algo salio mal")
+
+            if (producto["precio"] > 0 and len(producto["nombre"]) > 0
+                    and producto["stock"] >= 0 and producto["costo"] >= 0):
                 inventario.append(producto)
                 print()
                 print("Producto agregado")
             else:
                 print("Algo salio mal ✖️")
 
-    return inventario
+    mostrar_inventario()
+
+
 
 def editar_categorias():
     while True:
@@ -103,40 +114,100 @@ def editar_categorias():
 
     elif editar_categoria == 3:
         return
+
+def actualizar_datos(buscar):
+        if len(inventario) == 0:
+            return
+        for producto in inventario:
+            if producto["nombre"] == buscar or producto["ID"] == int(buscar):
+                print(f"{producto['nombre']}")
+                print(f"En existencia: {producto['stock']}")
+                print(f"Costo: ${producto['costo']}")
+                print(f"Precio: ${producto['precio']}")
+                print(f"Categoria: {producto['categoria']}")
+
+                modificar = int(input("¿Que deseas cambiar?"
+                                      "\n1.Nombre"
+                                      "\n2.Stock"
+                                      "\n3.Costo"
+                                      "\n4.Precio"
+                                      "\n5.Categoria"))
+                if modificar == 1:
+                    print(f"El nombre actual de este producto es: {producto['nombre']}")
+                    nuevo_nombre = input("Cambiar el nombre a: ")
+                    id_actual = producto['ID']
+                    if not any(producto['nombre'] == nuevo_nombre and producto['ID'] != id_actual for producto in
+                               inventario):
+                        producto['nombre'] = nuevo_nombre
+                        print("¡Nombre actualizado con éxito!")
+                    else:
+                        print("Ese nombre ya está siendo usado por otro producto.")
+                if modificar == 2:
+                    print(f"El stock actual de este producto es: {producto['stock']}")
+                    nuevo_stock = int(input("Cambiar el stock a: "))
+                    if nuevo_stock >= 0:
+                        producto['stock'] = nuevo_stock
+                if modificar == 3:
+                    print(f"El costo actual de este producto es de: ${producto['precio']}")
+                    nuevo_costo = float(input("Cambiar el costo de este producto: "))
+                    if nuevo_costo >= 0:
+                        producto['costo'] = nuevo_costo
+                if modificar == 4:
+                    print(f"El precio actual de este producto es de: ${producto['precio']}")
+                    nuevo_precio = float(input("Cambiar el precio de este producto: "))
+                    if nuevo_precio >= 0:
+                        producto['precio'] = nuevo_precio
+                if modificar == 5:
+                    print(f"La categoria actual de este producto es: {producto['categoria']}")
+                    cambiar_categoria = input("Cambiar el categoria de este producto: ")
+                    if cambiar_categoria in categorias:
+                        producto['categoria'] = cambiar_categoria
+                    else:
+                        print("Esa categoria no existe")
+
+
 print("==========================================================================================")
-print("ingrese una opcion valida: \n 1. Agregar nuevo producto. \n 2. Visualizar el inventario. \n"
-      "3.Editar categorias. \n 4. Salir")
+print("ingrese una opcion valida: "
+      "\n1. Agregar nuevo producto. "
+      "\n2. Visualizar el inventario. \n"
+      "3.Editar categorias. "
+      "\n4. Actualizar datos"
+      "\n5. Salir" )
 print("==========================================================================================")
 print()
-validar = True
-while validar:
+
+mostrar_inventario()
+
+while True:
     try:
         opcion = int(input("Seleccione una opcion: "))
-        break;
+        break
     except ValueError:
         print("Ingrese una opcion valida")
-        validar = True
 
-while opcion !=4:
+while opcion !=5:
     if opcion ==1:
-        reinicio = True
-        while reinicio == True:
+        while True:
             try:
                 nuevo_producto = int(input("¿Cuantos productos nuevos ingresara?"))
                 agregar_producto(nuevo_producto)
-                break;
+                break
             except ValueError:
                 print("Ingrese un numero valido por favor")
 
     elif opcion == 2:
-        if inventario == []:
+        if not inventario:
             print("No hay productos")
 
         else:
-            print(inventario)
+            mostrar_inventario()
 
     elif opcion ==3:
         editar_categorias()
+
+    elif opcion == 4:
+        mod = input("Ingresa el ID o nombre del producto que deseas modificar: ").isdigit()
+        actualizar_datos(mod)
     print()
     print("==========================================================================================")
     try:
