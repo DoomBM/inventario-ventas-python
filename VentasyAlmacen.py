@@ -187,16 +187,30 @@ def actualizar_datos(buscar):
                 if modificar == 6:
                     return
 
+def eliminar_producto(buscar):
+    if len(inventario) >= 1:
+        for producto in inventario:
+            es_id = buscar.isdigit() and producto["ID"] == int(buscar)
+            es_nombre = producto["nombre"].lower() == buscar.lower()
+            if es_id or es_nombre:
+                print(f"El producto '{producto['nombre']}' se ha sido eliminado!")
+                inventario.remove(producto)
+    else:
+        print("No hay elementos en el inventario.")
 
 
-print("==========================================================================================")
+
+
+
+print("=" * 30)
 print("ingrese una opcion valida: "
       "\n1. Agregar nuevo producto. "
       "\n2. Visualizar el inventario. \n"
-      "3.Editar categorias. "
+      "3. Editar categorias. "
       "\n4. Actualizar datos"
-      "\n5. Salir" )
-print("==========================================================================================")
+      "\n5. Eliminar producto o categoria."
+      "\n6. Salir" )
+print("=" * 30)
 print()
 
 mostrar_inventario()
@@ -208,7 +222,7 @@ while True:
     except ValueError:
         print("Ingrese una opcion valida")
 
-while opcion !=5:
+while opcion !=6:
     if opcion ==1:
         while True:
             try:
@@ -229,9 +243,11 @@ while opcion !=5:
         editar_categorias()
 
     elif opcion == 4:
-
         buscar_producto = input("¿Que producto buscas?")
         buscar_productos(buscar_producto)
+    elif opcion ==5:
+        eliminar = input("¿Que producto vas a eliminar?")
+        eliminar_producto(eliminar)
 
     print()
     print("==========================================================================================")
@@ -239,4 +255,3 @@ while opcion !=5:
         opcion = int(input("Seleccione una opcion de vuelta: "))
     except ValueError:
         print("Esa opcion no es valida")
-        break
