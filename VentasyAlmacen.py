@@ -115,23 +115,43 @@ def editar_categorias():
     elif editar_categoria == 3:
         return
 
-def actualizar_datos(buscar):
-        if len(inventario) == 0:
-            return
-        for producto in inventario:
-            if producto["nombre"] == buscar or producto["ID"] == int(buscar):
-                print(f"{producto['nombre']}")
-                print(f"En existencia: {producto['stock']}")
-                print(f"Costo: ${producto['costo']}")
-                print(f"Precio: ${producto['precio']}")
-                print(f"Categoria: {producto['categoria']}")
+def buscar_productos(buscar):
+    if len(inventario) == 0:
+        print("El inventario está vacío.")
+        return
+    encontrado = False
+    for producto in inventario:
+        es_id = buscar.isdigit() and producto["ID"] == int(buscar)
+        es_nombre = producto["nombre"].lower() == buscar.lower()
+        if es_id or es_nombre:
+            encontrado = True
+            print("-" * 30)
+            print(f"ID: {producto['ID']}")
+            print(f"Nombre: {producto['nombre']}")
+            print(f"En existencia: {producto['stock']}")
+            print(f"Costo: ${producto['costo']}")
+            print(f"Precio: ${producto['precio']}")
+            print(f"Categoria: {producto['categoria']}")
+            print("-" * 30)
 
+        modificar = input("¿Quieres realizarle alguna modificación? (Escribe 'Y' para aceptar): ")
+        if modificar.upper() == "Y":
+            actualizar_datos(producto['ID'])
+
+        break
+    if not encontrado:
+        print("No se encontró ningún producto con ese nombre o ID.")
+
+def actualizar_datos(buscar):
+        for producto in inventario:
+            if producto["ID"] == int(buscar):
                 modificar = int(input("¿Que deseas cambiar?"
                                       "\n1.Nombre"
                                       "\n2.Stock"
                                       "\n3.Costo"
                                       "\n4.Precio"
-                                      "\n5.Categoria"))
+                                      "\n5.Categoria"
+                                      "\n6.Salir"))
                 if modificar == 1:
                     print(f"El nombre actual de este producto es: {producto['nombre']}")
                     nuevo_nombre = input("Cambiar el nombre a: ")
@@ -164,16 +184,33 @@ def actualizar_datos(buscar):
                         producto['categoria'] = cambiar_categoria
                     else:
                         print("Esa categoria no existe")
+                if modificar == 6:
+                    return
+
+def eliminar_producto(buscar):
+    if len(inventario) >= 1:
+        for producto in inventario:
+            es_id = buscar.isdigit() and producto["ID"] == int(buscar)
+            es_nombre = producto["nombre"].lower() == buscar.lower()
+            if es_id or es_nombre:
+                print(f"El producto '{producto['nombre']}' se ha sido eliminado!")
+                inventario.remove(producto)
+    else:
+        print("No hay elementos en el inventario.")
 
 
-print("==========================================================================================")
+
+
+
+print("=" * 30)
 print("ingrese una opcion valida: "
       "\n1. Agregar nuevo producto. "
       "\n2. Visualizar el inventario. \n"
-      "3.Editar categorias. "
+      "3. Editar categorias. "
       "\n4. Actualizar datos"
-      "\n5. Salir" )
-print("==========================================================================================")
+      "\n5. Eliminar producto o categoria."
+      "\n6. Salir" )
+print("=" * 30)
 print()
 
 mostrar_inventario()
@@ -185,7 +222,7 @@ while True:
     except ValueError:
         print("Ingrese una opcion valida")
 
-while opcion !=5:
+while opcion !=6:
     if opcion ==1:
         while True:
             try:
@@ -206,8 +243,12 @@ while opcion !=5:
         editar_categorias()
 
     elif opcion == 4:
-        mod = input("Ingresa el ID o nombre del producto que deseas modificar: ").isdigit()
-        actualizar_datos(mod)
+        buscar_producto = input("¿Que producto buscas?")
+        buscar_productos(buscar_producto)
+    elif opcion ==5:
+        eliminar = input("¿Que producto vas a eliminar?")
+        eliminar_producto(eliminar)
+
     print()
     print("==========================================================================================")
     try:
