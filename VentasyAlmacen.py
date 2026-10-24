@@ -1,3 +1,5 @@
+from operator import truediv
+
 inventario = []
 categorias = []
 
@@ -145,58 +147,86 @@ def buscar_productos(buscar):
 def actualizar_datos(buscar):
         for producto in inventario:
             if producto["ID"] == int(buscar):
-                modificar = int(input("¿Que deseas cambiar?"
+                while True:
+                    modificar = int(input("¿Que deseas cambiar?"
                                       "\n1.Nombre"
                                       "\n2.Stock"
                                       "\n3.Costo"
                                       "\n4.Precio"
                                       "\n5.Categoria"
                                       "\n6.Salir"))
-                if modificar == 1:
-                    print(f"El nombre actual de este producto es: {producto['nombre']}")
-                    nuevo_nombre = input("Cambiar el nombre a: ")
-                    id_actual = producto['ID']
-                    if not any(producto['nombre'] == nuevo_nombre and producto['ID'] != id_actual for producto in
+                    if modificar == 1:
+                        print(f"El nombre actual de este producto es: {producto['nombre']}")
+                        nuevo_nombre = input("Cambiar el nombre a: ").strip()
+                        if not nuevo_nombre:
+                            print("El nombre no puede estar vacio")
+                            id_actual = producto['ID']
+                        elif any(producto['nombre'] == nuevo_nombre and producto['ID'] != id_actual for producto in
                                inventario):
-                        producto['nombre'] = nuevo_nombre
-                        print("¡Nombre actualizado con éxito!")
+                            print("Ese nombre ya está siendo usado por otro producto.")
+                        else:
+                            producto["nombre"] = nuevo_nombre
+                            print("¡Nombre actualizado con éxito!")
+                    elif modificar == 2:
+                        print(f"El stock actual de este producto es: {producto['stock']}")
+                        while True:
+                            try:
+                                nuevo_stock = int(input("Cambiar el stock a: "))
+                                if nuevo_stock >= 0:
+                                    producto['stock'] = nuevo_stock
+                                    break
+                            except ValueError:
+                                print("Ingrese un numero valido.")
+                    elif modificar == 3:
+                        print(f"El costo actual de este producto es de: ${producto['costo']}")
+                        while True:
+                            try:
+                                nuevo_costo = float(input("Cambiar el costo de este producto: "))
+                                if nuevo_costo >= 0:
+                                    producto['costo'] = nuevo_costo
+                                    break
+                            except ValueError:
+                                print("Ingrese un numero valido.")
+                    elif modificar == 4:
+                        print(f"El precio actual de este producto es de: ${producto['precio']}")
+                        while True:
+                            try:
+                                nuevo_precio = float(input("Cambiar el precio de este producto: "))
+                                if nuevo_precio >= 0:
+                                    producto['precio'] = nuevo_precio
+                                    break
+                            except ValueError:
+                                print("Valor invalido")
+                    elif modificar == 5:
+                        print(f"La categoria actual de este producto es: {producto['categoria']}")
+                        cambiar_categoria = input("Cambiar el categoria de este producto: ")
+                        if cambiar_categoria in categorias:
+                            if cambiar_categoria == producto['categoria']:
+                                producto['categoria'] = cambiar_categoria
+                        else:
+                            print("Esa categoria no existe")
+                    elif modificar == 6:
+                        return
                     else:
-                        print("Ese nombre ya está siendo usado por otro producto.")
-                if modificar == 2:
-                    print(f"El stock actual de este producto es: {producto['stock']}")
-                    nuevo_stock = int(input("Cambiar el stock a: "))
-                    if nuevo_stock >= 0:
-                        producto['stock'] = nuevo_stock
-                if modificar == 3:
-                    print(f"El costo actual de este producto es de: ${producto['precio']}")
-                    nuevo_costo = float(input("Cambiar el costo de este producto: "))
-                    if nuevo_costo >= 0:
-                        producto['costo'] = nuevo_costo
-                if modificar == 4:
-                    print(f"El precio actual de este producto es de: ${producto['precio']}")
-                    nuevo_precio = float(input("Cambiar el precio de este producto: "))
-                    if nuevo_precio >= 0:
-                        producto['precio'] = nuevo_precio
-                if modificar == 5:
-                    print(f"La categoria actual de este producto es: {producto['categoria']}")
-                    cambiar_categoria = input("Cambiar el categoria de este producto: ")
-                    if cambiar_categoria in categorias:
-                        producto['categoria'] = cambiar_categoria
-                    else:
-                        print("Esa categoria no existe")
-                if modificar == 6:
-                    return
+                        print("Opcion invalida.")
+        return
 
 def eliminar_producto(buscar):
-    if len(inventario) >= 1:
-        for producto in inventario:
-            es_id = buscar.isdigit() and producto["ID"] == int(buscar)
-            es_nombre = producto["nombre"].lower() == buscar.lower()
-            if es_id or es_nombre:
-                print(f"El producto '{producto['nombre']}' se ha sido eliminado!")
-                inventario.remove(producto)
-    else:
+    if len(inventario) == 0:
         print("No hay elementos en el inventario.")
+        return
+    for producto in inventario:
+        es_id = buscar.isdigit() and producto["ID"] == int(buscar)
+        es_nombre = producto["nombre"].lower() == buscar.lower()
+        if es_id or es_nombre:
+            confirmar = input(f"¿Seguro que quieres eliminar '{producto['nombre']}'? (Y/N): ")
+            if confirmar.upper() == "Y":
+                inventario.remove(producto)
+                print(f"El producto '{producto['nombre']}' ha sido eliminado.")
+            else:
+                print("Eliminación cancelada.")
+            return
+    print("No se encontró ningún producto con ese nombre o ID.")
 
 
 
