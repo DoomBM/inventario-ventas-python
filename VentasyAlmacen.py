@@ -1,73 +1,75 @@
-from operator import truediv
-
 inventario = []
 categorias = []
+productos = {}
 
 
 def mostrar_inventario():
     for producto in inventario:
-        print(f"ID: {producto['ID']}- '{producto['nombre']}'")
+        print(f"ID: {productos['ID']}- '{producto['nombre']}'")
         print(f"En existencia: {producto['stock']}")
         print(f"Costo: ${producto['costo']}")
         print(f"Precio: ${producto['precio']}")
         print(f"Categoria: {producto['categoria']}")
         print("---------------------------------")
 
-def agregar_producto(productos):
-    if productos > 0:
-        for i in range(productos):
-            producto = {}
-
-            producto["ID"] = len(inventario ) + 1
-            while True:
-                nombre = input(f"Ingrese el nombre del producto {i + 1}: ").strip()
-                if len(nombre) > 0:
-                    producto["nombre"] = nombre
-                    break
-                print("El nombre no puede estar vacío. Inténtalo de nuevo.")
-            while True:
-                try:
-                    producto["costo"] = float(input("Ingrese el costo del producto: $"))
-                    break
-                except ValueError:
-                    print("Ingrese un numero valido")
+def agregar_producto():
+    otro = True
+    while otro:
+        productos["ID"] = len(inventario ) + 1
+        while True:
+            nombre = input("Ingrese el nombre del producto: ").strip()
+            if len(nombre) > 0:
+                productos["nombre"] = nombre
+                break
+            print("El nombre no puede estar vacío. Inténtalo de nuevo.")
+        while True:
+            try:
+                productos["costo"] = float(input("Ingrese el costo del producto: $"))
+                break
+            except ValueError:
+                print("Ingrese un numero valido")
 
 
-            while True:
-                try:
-                    producto["precio"] = float(input("Ingrese el precio: $"))
-                    break
-                except ValueError:
-                    print("Ingrese un precio valido")
-            while True:
-                try:
-                    producto["stock"] = int(input("¿Cuantos deseas agregar?:"))
-                    break
-                except ValueError:
-                    print("Esa cantidad no es valida")
-            while True:
-                clasificar = input("¿A que categoria permanece?")
-                if clasificar in categorias:
-                    producto["categoria"] = clasificar
+        while True:
+            try:
+                productos["precio"] = float(input("Ingrese el precio: $"))
+                break
+            except ValueError:
+                print("Ingrese un precio valido")
+        while True:
+            try:
+                productos["stock"] = int(input("¿Cuantos deseas agregar?:"))
+                break
+            except ValueError:
+                print("Esa cantidad no es valida")
+        while True:
+            clasificar = input("¿A que categoria permanece?")
+            if clasificar in categorias:
+                productos["categoria"] = clasificar
+                break
+            else:
+                mensaje = input("Esa categoria no existe, ¿Deseas agregarla?")
+                if mensaje.lower() == "si":
+                    categorias.append(clasificar)
+                    productos["categoria"] = clasificar
+                    print("Categoria agregada")
                     break
                 else:
-                    mensaje = input("Esa categoria no existe, ¿Deseas agregarla?")
-                    if mensaje.lower() == "si":
-                        categorias.append(clasificar)
-                        producto["categoria"] = clasificar
-                        print("Categoria agregada")
-                        break
-                    else:
-                        print("Algo salio mal")
+                    print("Algo salio mal")
 
-            if (producto["precio"] > 0 and len(producto["nombre"]) > 0
-                    and producto["stock"] >= 0 and producto["costo"] >= 0):
-                inventario.append(producto)
-                print()
-                print("Producto agregado")
-            else:
-                print("Algo salio mal ✖️")
-
+        if (productos["precio"] > 0 and len(productos["nombre"]) > 0
+                and productos["stock"] >= 0 and productos["costo"] >= 0):
+            inventario.append(productos)
+            print()
+            print("Producto agregado")
+        else:
+            print("Algo salio mal ✖️")
+        agregar = input("Desea agregar otro producto? (presiona 'S' si es asi y enter para salir)")
+        if agregar.upper() == "S":
+            otro = True
+        else:
+            otro = False
+    
     mostrar_inventario()
 
 
@@ -105,9 +107,9 @@ def editar_categorias():
 
         while True:
             try:
-                eliminar = int(input("Eliminar categoria (pon su numero): "))
-                if 1 <= eliminar <= len(categorias):
-                    categorias.pop(eliminar - 1)
+                elimina = int(input("Eliminar categoria (pon su numero): "))
+                if 1 <= elimina <= len(categorias):
+                    categorias.pop(elimina - 1)
                     print("Categoria eliminada.")
                     break
                 print("Categoria inexistente.")
@@ -158,9 +160,9 @@ def actualizar_datos(buscar):
                     if modificar == 1:
                         print(f"El nombre actual de este producto es: {producto['nombre']}")
                         nuevo_nombre = input("Cambiar el nombre a: ").strip()
+                        id_actual = producto['ID']
                         if not nuevo_nombre:
                             print("El nombre no puede estar vacio")
-                            id_actual = producto['ID']
                         elif any(producto['nombre'] == nuevo_nombre and producto['ID'] != id_actual for producto in
                                inventario):
                             print("Ese nombre ya está siendo usado por otro producto.")
@@ -228,7 +230,36 @@ def eliminar_producto(buscar):
             return
     print("No se encontró ningún producto con ese nombre o ID.")
 
+def poco_stock():
+    for producto in inventario:
+        if producto["stock"] <= 5:
+            print(f"Hay poco stock del producto {producto['nombre']}!!")
 
+def venta():
+    carrito = []
+    agregados = {}
+    validacion = True
+    while validacion:
+        agregados["nombre"] = input("¿Que producto ingresara al carrito?: ")
+        if len(agregados) == 0:
+            print("Producto no encontrado")
+            break
+        for producto in inventario:
+            if producto["nombre"] == agregados["Nombre"]:
+                carrito.append(producto)
+            while True:
+                try:
+                    num = int(input("Cual es la cantidad que llevaras?"))
+                    if num >= 0:
+                        agregados["cantidad"] = num
+                        break
+                except ValueError:
+                    print("Ingrese un numero valido.")
+        otro_product = input("¿Deseas agregar otra cosa? (presione 'S' para confirmar o enter para salir): " )
+        if otro_product == "S":
+            validacion = True
+        else:
+            validacion = False
 
 
 
@@ -237,10 +268,12 @@ print("ingrese una opcion valida: "
       "\n1. Agregar nuevo producto. "
       "\n2. Visualizar el inventario. \n"
       "3. Editar categorias. "
-      "\n4. Actualizar datos"
+      "\n4. Buscar producto. "
       "\n5. Eliminar producto o categoria."
       "\n6. Salir" )
 print("=" * 30)
+
+poco_stock()
 print()
 
 mostrar_inventario()
@@ -254,13 +287,7 @@ while True:
 
 while opcion !=6:
     if opcion ==1:
-        while True:
-            try:
-                nuevo_producto = int(input("¿Cuantos productos nuevos ingresara?"))
-                agregar_producto(nuevo_producto)
-                break
-            except ValueError:
-                print("Ingrese un numero valido por favor")
+        agregar_producto()
 
     elif opcion == 2:
         if not inventario:
@@ -282,6 +309,7 @@ while opcion !=6:
     print()
     print("==========================================================================================")
     try:
+        poco_stock()
         opcion = int(input("Seleccione una opcion de vuelta: "))
     except ValueError:
         print("Esa opcion no es valida")
