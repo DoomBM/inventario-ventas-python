@@ -15,8 +15,6 @@ def mostrar_inventario():
 def agregar_producto():
     otro = True
     while otro:
-        productos = {}
-        productos["ID"] = len(inventario ) + 1
         while True:
             nombre = input("Ingrese el nombre del producto: ").strip()
             if len(nombre) > 0:
@@ -31,48 +29,49 @@ def agregar_producto():
             except ValueError:
                 print("Ingrese un numero valido")
 
-
         while True:
             try:
                 precio = float(input("Ingrese el precio: $"))
-                if precio
-                break
+                if precio > 0:
+                    break
+                print("El precio debe ser mayor que 0.")
             except ValueError:
                 print("Ingrese un precio valido")
         while True:
             try:
-                productos["stock"] = int(input("¿Cuantos deseas agregar?:"))
-                break
+                stock = int(input("¿Cuantos deseas agregar?:"))
+                if stock >= 0:
+                    break
+                print("El stock no puede ser negativo.")
             except ValueError:
                 print("Esa cantidad no es valida")
+
         while True:
-            clasificar = input("¿A que categoria permanece?")
-            if clasificar in categorias:
-                productos["categoria"] = clasificar
+            categoria = input("¿A que categoria permanece?").strip().lower()
+            if categoria in categorias:
                 break
             else:
-                mensaje = input("Esa categoria no existe, ¿Deseas agregarla?")
-                if mensaje.lower() == "si":
-                    categorias.append(clasificar)
-                    productos["categoria"] = clasificar
+                respuesta = input("Esa categoría no existe, ¿deseas agregarla? (si/no): ")
+                if respuesta.lower() == "si":
+                    categorias.append(categoria)
                     print("Categoria agregada")
                     break
-                else:
-                    print("Algo salio mal")
 
-        if (productos["precio"] > 0 and len(productos["nombre"]) > 0
-                and productos["stock"] >= 0 and productos["costo"] >= 0):
-            inventario.append(productos)
-            print()
-            print("Producto agregado")
-        else:
-            print("Algo salio mal ✖️")
-        agregar = input("Desea agregar otro producto? (presiona 'S' si es asi y enter para salir)")
-        if agregar.upper() == "S":
-            otro = True
-        else:
-            otro = False
-    
+        producto = {
+            "ID": estado["siguiente_id"],
+            "nombre": nombre,
+            "costo": costo,
+            "precio": precio,
+            "stock": stock,
+            "categoria": categoria,
+        }
+        estado["siguiente_id"] += 1
+        inventario.append(producto)
+        print("\nProducto agregado")
+
+        agregar = input("¿Desea agregar otro producto? (presiona 'S' si es así y enter para salir) ")
+        otro = agregar.upper() == "S"
+
     mostrar_inventario()
 
 
@@ -261,7 +260,7 @@ def menu_almacen():
         except ValueError:
             print("Ingrese una opcion valida")
 
-    while opcion !=6:
+    while 0 < opcion < 6:
         if opcion ==1:
             agregar_producto()
 

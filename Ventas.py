@@ -1,8 +1,9 @@
 import Almacen
 from Almacen import inventario
-from Almacen import productos
+
 
 def venta():
+    num = int()
     bienvenida()
     carrito = []
     agregados = {}
@@ -14,29 +15,31 @@ def venta():
             break
         for producto in inventario:
             if producto["nombre"] == nombre:
-                agregados["nombre"] = nombre
-            else:
-                print("Producto no encontrado")
-        while True:
-            try:
-                num = int(input("Cual es la cantidad que llevaras?"))
-                if 0 <= num <= productos["stock"]:
-                    agregados["cantidad"] = num
-                    productos["stock"] -= num
-                    break
-                elif productos["stock"] < 0:
-                    productos["stock"] = 0
-                else:
-                    print("Algo salio mal")
-            except ValueError:
-                print("Ingrese un numero valido.")
+                nombre = producto["nombre"]
+            while True:
+                    try:
+                        num = int(input("Cual es la cantidad que llevaras?"))
+                        if 0 <= num <= producto["stock"]:
+                            agregados["cantidad"] = num
+                            producto["stock"] -= num
+                            break
+                        elif producto["stock"] < 0:
+                            producto["stock"] = 0
+                        else:
+                            print("Algo salio mal")
+                    except ValueError:
+                        print("Ingrese un numero valido.")
+        agregados = {
+            "nombre" : nombre,
+            "cantidad" : num,
+        }
         carrito.append(agregados)
         otro_product = input("¿Deseas agregar otra cosa? (presione 'S' para confirmar o enter para salir): " )
         if otro_product == "S":
             validacion = True
         else:
             validacion = False
-    return carrito
+    print(carrito)
 
 def bienvenida():
     print("Bienvenido a la papeleria")
