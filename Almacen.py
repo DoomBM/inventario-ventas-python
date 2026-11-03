@@ -120,33 +120,35 @@ def editar_categorias():
 
     elif editar_categoria == 3:
         return
-
-def buscar_productos(buscar):
+def encontrar_productos(buscar):
     if len(inventario) == 0:
         print("El inventario está vacío.")
-        return
-    encontrado = False
+        return None
     for producto in inventario:
         es_id = buscar.isdigit() and producto["ID"] == int(buscar)
         es_nombre = producto["nombre"].lower() == buscar.lower()
         if es_id or es_nombre:
-            encontrado = True
-            print("-" * 30)
-            print(f"ID: {producto['ID']}")
-            print(f"Nombre: {producto['nombre']}")
-            print(f"En existencia: {producto['stock']}")
-            print(f"Costo: ${producto['costo']}")
-            print(f"Precio: ${producto['precio']}")
-            print(f"Categoria: {producto['categoria']}")
-            print("-" * 30)
+            return producto
+    return None
 
-        modificar = input("¿Quieres realizarle alguna modificación? (Escribe 'Y' para aceptar): ")
-        if modificar.upper() == "Y":
-            actualizar_datos(producto['ID'])
+def buscar_productos(buscar):
+    producto = encontrar_productos(buscar)
+    if producto is None:
+        print("No se encontró ningún producto con ese nombre o ID")
+        return
+    print("-" * 30)
+    print(f"ID: {producto['ID']}")
+    print(f"Nombre: {producto['nombre']}")
+    print(f"En existencia: {producto['stock']}")
+    print(f"Costo: ${producto['costo']}")
+    print(f"Precio: ${producto['precio']}")
+    print(f"Categoria: {producto['categoria']}")
+    print("-" * 30)
 
-        break
-    if not encontrado:
-        print("No se encontró ningún producto con ese nombre o ID.")
+    modificar = input("¿Quieres realizarle alguna modificación? (Escribe 'Y' para aceptar): ")
+    if modificar.upper() == "Y":
+        actualizar_datos(producto['ID'])
+
 
 def actualizar_datos(buscar):
         for producto in inventario:
