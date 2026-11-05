@@ -1,8 +1,9 @@
 import Almacen
-import datetime
+from Almacen import inventario
+
 
 def venta():
-    carrito_compras = []
+    carrito_compras = []-
     bienvenida()
     print()
     while True:
@@ -59,11 +60,10 @@ def armar_carrito(carrito):
             "cantidad": cantidad,
             "precio": float(producto["precio"]),
         }
-        if ya_llevado  > 0:
-            for recorrido in carrito:
-                if recorrido["ID"] == producto["ID"]:
-                    recorrido["cantidad"] += cantidad
-                    break
+        carrito.append(agregados)
+        otro_product = input("¿Deseas agregar otra cosa? (presione 'S' para confirmar o enter para salir): " )
+        if otro_product == "S":
+            validacion = True
         else:
             carrito.append(articulo)
         otro = input("¿Deseas agregar otra cosa? (presione 'S' si es asi o enter para salir): " )
@@ -131,7 +131,7 @@ def bienvenida():
     print("Bienvenido a la papeleria")
     print("-" * 30)
     print("Estos son los productos disponibles:")
-    productos_disponibles()
+    Almacen.mostrar_inventario()
     print("-" * 30)
     print()
 
