@@ -1,45 +1,59 @@
 import Almacen
 from Almacen import inventario
+import datetime
 
 
 def venta():
-    carrito_compras = []-
+    carrito_compras = []
     bienvenida()
     print()
     while True:
         armar_carrito(carrito_compras)
+        if len(carrito_compras) == 0:
+            mensaje_error = input("No agregaste nada. Por favor presiona una opcion"
+                                  "\n'C' para agregar productos"
+                                  "\nO cualquier otra tecla para cancelar la compra")
+            if mensaje_error.upper() == "C":
+                continue
+            else:
+                break
         print()
-        total = mostrar_carrito(carrito_compras)
         ultimos_cambios(carrito_compras)
+        total_compra = mostrar_carrito(carrito_compras)
 
-        finalizar_compra = input("Presione: \n'S' para finalizar la compra \n'M' para modificar la compra \ncualquier itra tecla para cancelar la compra ")
+        finalizar_compra = input("Presione: \n'S' para finalizar la compra "
+                                 "\n'C' para continuar su la compra "
+                                 "\ncualquier otra tecla para cancelar la compra ")
         if finalizar_compra.upper() == "S":
             fecha = datetime.datetime.now()
-            carrito_compras.append(fecha.strftime("%d/%m/%Y %H:%M:%S"))
-            carrito_compras.append(total)
-            break
-        elif finalizar_compra.upper() == "M":
+            venta_realizada = {
+                "fecha" : fecha,
+                "carrito" : carrito_compras,
+                "total_compra" : total_compra,
+            }
+            return venta_realizada
+        elif finalizar_compra.upper() == "C":
             continue
         else:
             carrito_compras.clear()
-            break
-
-
+            return None
 
 def armar_carrito(carrito):
     while True:
         buscar = input("¿Que producto buscas? ")
         producto = Almacen.encontrar_productos(buscar)
+        if producto is None:
+            print("No se ha encontrado ese producto. Vuelve a buscar")
+            continue
         ya_llevado = cantidad_en_carrito(carrito, producto["ID"])
         disponible = producto["stock"] - ya_llevado
         if producto is None:
             print("No se encontro este producto")
             continue
-        if disponible < 0:
+        if disponible <= 0:
             print("No hay mas productos disponibles")
             continue
         while True:
-
             try:
                 cantidad = int(input("Cantidad: "))
             except ValueError:
@@ -49,7 +63,6 @@ def armar_carrito(carrito):
                 print("la cantidad tiene que ser mayor a 0")
                 continue
             if ya_llevado + cantidad > producto["stock"]:
-
                 print("Ha rebasado el stock")
                 continue
             else:
@@ -82,8 +95,6 @@ def mostrar_carrito(carrito):
     print(f"Total: {total}")
     return total
 
-
-
 def ultimos_cambios(carrito):
     print("-"*30)
     while True:
@@ -101,7 +112,6 @@ def ultimos_cambios(carrito):
         else:
             print("Ingrese una opcion valida")
 
-
 def eliminar_producto(carrito):
     for indice, articulo in enumerate(carrito, start=1):
         print(f"{indice}: {articulo['nombre']}")
@@ -116,10 +126,6 @@ def eliminar_producto(carrito):
             break
         else:
             print("Ingrese un numero valido.")
-
-
-
-
 
 def cantidad_en_carrito(carrito, id_producto):
     for busqueda in carrito:
@@ -145,7 +151,3 @@ def productos_disponibles():
     else:
         print("No hay productos disponibles")
         return
-
-
-Almacen.menu_almacen()
-venta()
