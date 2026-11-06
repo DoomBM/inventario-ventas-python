@@ -1,9 +1,10 @@
 import Almacen
 from Almacen import inventario
+import datetime
 
 
 def venta():
-    carrito_compras = []-
+    carrito_compras = []
     bienvenida()
     print()
     while True:
