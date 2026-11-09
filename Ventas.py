@@ -1,5 +1,4 @@
 import Almacen
-from Almacen import inventario
 import datetime
 
 
@@ -47,9 +46,6 @@ def armar_carrito(carrito):
             continue
         ya_llevado = cantidad_en_carrito(carrito, producto["ID"])
         disponible = producto["stock"] - ya_llevado
-        if producto is None:
-            print("No se encontro este producto")
-            continue
         if disponible <= 0:
             print("No hay mas productos disponibles")
             continue
@@ -73,12 +69,7 @@ def armar_carrito(carrito):
             "cantidad": cantidad,
             "precio": float(producto["precio"]),
         }
-        carrito.append(agregados)
-        otro_product = input("¿Deseas agregar otra cosa? (presione 'S' para confirmar o enter para salir): " )
-        if otro_product == "S":
-            validacion = True
-        else:
-            carrito.append(articulo)
+        carrito.append(articulo)
         otro = input("¿Deseas agregar otra cosa? (presione 'S' si es asi o enter para salir): " )
         if otro.upper() != "S":
             break
@@ -151,3 +142,9 @@ def productos_disponibles():
     else:
         print("No hay productos disponibles")
         return
+
+def metodo_pago(metodo):
+    print("-"*30)
+    print("¿Que metodo desea pagar?:")
+    print("1. Efectivo \n2. Targeta")
+    if metodo == "1":
