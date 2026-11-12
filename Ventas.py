@@ -15,6 +15,7 @@ def venta():
             if mensaje_error.upper() == "C":
                 continue
             else:
+
                 break
         print()
         ultimos_cambios(carrito_compras)
@@ -143,8 +144,34 @@ def productos_disponibles():
         print("No hay productos disponibles")
         return
 
-def metodo_pago(metodo):
+def metodo_pago(total_compra):
     print("-"*30)
-    print("¿Que metodo desea pagar?:")
-    print("1. Efectivo \n2. Targeta")
-    if metodo == "1":
+    pago = {}
+    while True:
+        print("¿Que metodo desea pagar?:")
+        print("1. Efectivo \n2. Tarjeta \nPresione cualquier tecla para cancelar compra")
+        metodo = input()
+        if metodo == "1":
+            while True:
+                try:
+                    monto_recibido = float(input("Ingrese el monto dado por el usuario: "))
+                    break
+                except ValueError:
+                    print("Ingrese un numero valido.")
+            if monto_recibido < total_compra:
+                print("Error! Monto insuficiente")
+                continue
+            elif monto_recibido >= total_compra:
+                cambio = monto_recibido - total_compra
+            pago["monto_recibido"] = monto_recibido
+            pago["cambio"] = cambio
+            pago["metodo_pago"] = "Efectivo"
+            return pago
+        elif metodo == "2":
+            pago["monto_recibido"] = total_compra
+            pago["cambio"] = 0
+            pago["metodo_pago"] = "Tarjeta"
+            return pago
+        else:
+            print("Compra cancelada")
+            return None
