@@ -25,11 +25,16 @@ def venta():
                                  "\n'C' para continuar su la compra "
                                  "\ncualquier otra tecla para cancelar la compra ")
         if finalizar_compra.upper() == "S":
+            datos_pago = metodo_pago(total_compra)
+            if datos_pago is None:
+                carrito_compras.clear()
+                return None
             fecha = datetime.datetime.now()
             venta_realizada = {
                 "fecha" : fecha,
                 "carrito" : carrito_compras,
                 "total_compra" : total_compra,
+                "datos_pago" : datos_pago,
             }
             return venta_realizada
         elif finalizar_compra.upper() == "C":
