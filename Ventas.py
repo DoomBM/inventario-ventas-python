@@ -36,6 +36,7 @@ def venta():
                 "total_compra" : total_compra,
                 "datos_pago" : datos_pago,
             }
+            restar_existencias(carrito_compras)
             return venta_realizada
         elif finalizar_compra.upper() == "C":
             continue
@@ -180,3 +181,12 @@ def metodo_pago(total_compra):
         else:
             print("Compra cancelada")
             return None
+
+def restar_existencias(carrito):
+    for item in carrito:
+        producto_existente = Almacen.encontrar_productos(item["ID"])
+        if producto_existente is not None:
+            if item["cantidad"] <= producto_existente["stock"]:
+                producto_existente["stock"] -= item["cantidad"]
+        else:
+            print("Producto no existente")
