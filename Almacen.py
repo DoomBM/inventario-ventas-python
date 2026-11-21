@@ -25,8 +25,7 @@ def mostrar_producto(producto):
     print("-" * 30)
 
 def agregar_producto():
-    otro = True
-    while otro:
+    while True:
         while True:
             nombre = input("Ingrese el nombre del producto: ").strip()
             if len(nombre) > 0:
@@ -76,15 +75,18 @@ def agregar_producto():
             "precio": precio,
             "stock": stock,
             "categoria": categoria,
+            "activo": True,
         }
         estado["siguiente_id"] += 1
         inventario.append(producto)
         print("\nProducto agregado")
 
         agregar = input("¿Desea agregar otro producto? (presiona 'S' si es así y enter para salir) ")
-        otro = agregar.upper() == "S"
-
-    mostrar_inventario()
+        if agregar.upper() == "S":
+            continue
+        else:
+            mostrar_inventario()
+            break
 
 
 
@@ -133,15 +135,19 @@ def editar_categorias():
     elif editar_categoria == 3:
         return
 
-def encontrar_productos(buscar):
+def encontrar_productos(buscar, solo_activos = False):
     if len(inventario) == 0:
         print("El inventario está vacío.")
         return None
+
+
 
     for producto in inventario:
         es_id = buscar.isdigit() and producto["ID"] == int(buscar)
         es_nombre = producto["nombre"].lower() == buscar.lower()
         if es_id or es_nombre:
+            if solo_activos and not producto["activo"]:
+                return None
             return producto
 
     return None
@@ -230,7 +236,7 @@ def actualizar_datos(buscar):
                         print("Opcion invalida.")
         return
 
-def eliminar_producto(buscar):
+def desactivar_producto(buscar):
     if len(inventario) == 0:
         print("No hay elementos en el inventario.")
         return
@@ -238,10 +244,13 @@ def eliminar_producto(buscar):
         es_id = buscar.isdigit() and producto["ID"] == int(buscar)
         es_nombre = producto["nombre"].lower() == buscar.lower()
         if es_id or es_nombre:
+            if not producto["activo"]:
+                print(f"El producto '{producto['nombre']}' ya estaba desactivado.")
+                return
             confirmar = input(f"¿Seguro que quieres eliminar '{producto['nombre']}'? (Y/N): ")
             if confirmar.upper() == "Y":
-                inventario.remove(producto)
-                print(f"El producto '{producto['nombre']}' ha sido eliminado.")
+                producto["activo"] = False
+                print(f"El producto '{producto['nombre']}' ha sido desactivado.")
             else:
                 print("Eliminación cancelada.")
             return
@@ -269,16 +278,19 @@ def menu_almacen():
     mostrar_inventario()
 
     while True:
-        try:
-            opcion = int(input("Seleccione una opcion: "))
-            break
-        except ValueError:
-            print("Ingrese una opcion valida")
+        while True:
+            try:
+                opcion = int(input("Seleccione una opcion: "))
+                if 0 < opcion < 7:
+                    break
+                else:
+                    print("Ingrese una opcion entre 1 y 6")
+            except ValueError:
+                print("Ingrese una opcion valida")
 
-    while 0 < opcion < 6:
         if opcion ==1:
             agregar_producto()
-
+            break
         elif opcion == 2:
             if not inventario:
                 print("No hay productos")
@@ -286,20 +298,17 @@ def menu_almacen():
             else:
                 mostrar_inventario()
 
-        elif opcion ==3:
+        elif opcion == 3:
             editar_categorias()
 
         elif opcion == 4:
             buscar_producto = input("¿Que producto buscas?")
             buscar_productos(buscar_producto)
         elif opcion ==5:
-            eliminar = input("¿Que producto vas a eliminar?")
-            eliminar_producto(eliminar)
+            desactivar = input("¿Que producto vas a eliminar?")
+            desactivar_producto(desactivar)
+        elif opcion ==6:
+            break
 
         print()
         print("==========================================================================================")
-        try:
-            poco_stock()
-            opcion = int(input("Seleccione una opcion de vuelta: "))
-        except ValueError:
-            print("Esa opcion no es valida")

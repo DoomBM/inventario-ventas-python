@@ -15,7 +15,6 @@ def venta():
             if mensaje_error.upper() == "C":
                 continue
             else:
-
                 break
         print()
         ultimos_cambios(carrito_compras)
