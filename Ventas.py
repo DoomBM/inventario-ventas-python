@@ -45,9 +45,10 @@ def venta():
 
 def armar_carrito(carrito):
     while True:
-        buscar = input("¿Que producto buscas? ")
+        buscar = input("¿Que producto buscas? (si deseas salir escribe 'salir', 'x' o simplementye da enter)")
+        if buscar.lower() in ("salir", "x", ""): break
         producto = Almacen.encontrar_productos(buscar)
-        if producto is None:
+        if producto is None or producto["activo"] == False:
             print("No se ha encontrado ese producto. Vuelve a buscar")
             continue
         ya_llevado = cantidad_en_carrito(carrito, producto["ID"])
@@ -69,13 +70,18 @@ def armar_carrito(carrito):
                 continue
             else:
                 break
-        articulo = {
-            "ID": producto["ID"],
-            "nombre": producto["nombre"],
-            "cantidad": cantidad,
-            "precio": float(producto["precio"]),
-        }
-        carrito.append(articulo)
+        for item in carrito:
+            if item["ID"] == producto["ID"]:
+                item["cantidad"] += cantidad
+                break
+        else:
+            articulo = {
+                "ID": producto["ID"],
+                "nombre": producto["nombre"],
+                "cantidad": cantidad,
+                "precio": float(producto["precio"]),
+            }
+            carrito.append(articulo)
         otro = input("¿Deseas agregar otra cosa? (presione 'S' si es asi o enter para salir): " )
         if otro.upper() != "S":
             break

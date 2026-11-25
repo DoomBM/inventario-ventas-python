@@ -80,6 +80,6 @@ def mostrar_mercancia(datos_compra):
     print(f"Fecha de llegada: {datos_compra['fecha']}")
     print(f"ID: {datos_compra['ID']}")
     print(f"Nombre: {datos_compra['nombre']}")
-    print(f"¿Cuanta cantidad se ingreso?: {datos_compra['producto_ingresado']}")
+    print(f"Cantidad: {datos_compra['cantidad']}")
     print(f"Costo: {datos_compra['costo']}")
     print("-" * 45)

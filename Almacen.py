@@ -27,10 +27,12 @@ def mostrar_producto(producto):
 def agregar_producto():
     while True:
         while True:
-            nombre = input("Ingrese el nombre del producto: ").strip()
+            nombre = input("Ingrese el nombre del producto: (si  no deseas agregar algo escribe 'salir' o 'x')").strip()
             if len(nombre) > 0:
                 break
             print("El nombre no puede estar vacío. Inténtalo de nuevo.")
+        if nombre.lower() in ("x", "salir"):
+            break
         while True:
             try:
                 costo = float(input("Ingrese el costo del producto: $"))
@@ -140,11 +142,11 @@ def encontrar_productos(buscar, solo_activos = False):
         print("El inventario está vacío.")
         return None
 
-
+    buscar_str = str(buscar)
 
     for producto in inventario:
-        es_id = buscar.isdigit() and producto["ID"] == int(buscar)
-        es_nombre = producto["nombre"].lower() == buscar.lower()
+        es_id = buscar_str.isdigit() and producto["ID"] == int(buscar_str)
+        es_nombre = producto["nombre"].lower() == buscar_str.lower()
         if es_id or es_nombre:
             if solo_activos and not producto["activo"]:
                 return None
@@ -162,8 +164,7 @@ def buscar_productos(buscar):
     mostrar_producto(producto)
 
     modificar = input(
-        "¿Quieres realizarle alguna modificación? "
-        "(Escribe 'Y' para aceptar): "
+        "¿Quieres realizarle alguna modificación? (Escribe 'Y' para aceptar): "
     )
 
     if modificar.upper() == "Y":
@@ -247,14 +248,28 @@ def desactivar_producto(buscar):
             if not producto["activo"]:
                 print(f"El producto '{producto['nombre']}' ya estaba desactivado.")
                 return
-            confirmar = input(f"¿Seguro que quieres eliminar '{producto['nombre']}'? (Y/N): ")
+            confirmar = input(f"¿Seguro que quieres desactivar '{producto['nombre']}'? (Y/N): ")
             if confirmar.upper() == "Y":
                 producto["activo"] = False
                 print(f"El producto '{producto['nombre']}' ha sido desactivado.")
             else:
-                print("Eliminación cancelada.")
+                print("Desactivacion cancelada.")
             return
     print("No se encontró ningún producto con ese nombre o ID.")
+
+def activar_producto(buscar):
+    if len(inventario) == 0:
+        print("No hay elementos en el inventario.")
+        return
+    for producto in inventario:
+        es_id = buscar.isdigit() and producto["ID"] == int(buscar)
+        es_nombre = producto["nombre"].lower() == buscar.lower()
+        if es_id or es_nombre:
+            if producto["activo"]:
+                print(f"El producto '{producto['nombre']}' ya estaba activado.")
+                return
+        producto["activo"] = True
+        print(f"El producto '{producto['nombre']}' ha sido activado.")
 
 def poco_stock():
     for producto in inventario:
@@ -268,7 +283,7 @@ def menu_almacen():
       "\n2. Visualizar el inventario. \n"
       "3. Editar categorias. "
       "\n4. Buscar producto. "
-      "\n5. Eliminar producto o categoria."
+      "\n5. Desactivar producto o categoria."
       "\n6. Salir" )
     print("=" * 30)
 
@@ -281,7 +296,7 @@ def menu_almacen():
         while True:
             try:
                 opcion = int(input("Seleccione una opcion: "))
-                if 0 < opcion < 7:
+                if 0 < opcion < 8:
                     break
                 else:
                     print("Ingrese una opcion entre 1 y 6")
@@ -305,9 +320,12 @@ def menu_almacen():
             buscar_producto = input("¿Que producto buscas?")
             buscar_productos(buscar_producto)
         elif opcion ==5:
-            desactivar = input("¿Que producto vas a eliminar?")
+            desactivar = input("¿Que producto vas a desactivar?")
             desactivar_producto(desactivar)
         elif opcion ==6:
+            activar  = input("¿Que producto volveras a activar?")
+            activar_producto(activar)
+        elif opcion ==7:
             break
 
         print()
