@@ -9,7 +9,7 @@ print("=== PAPELERIA TODO A LA MANO ===")
 print("¿A que seccion iremos hoy?")
 
 while True:
-    seccion = input("1. Almacen \n2. Ventas \n3. Compras \n4. Cerrar").strip()
+    seccion = input("1. Almacen \n2. Ventas \n3. Compras \n7. Cerrar\n6. Cerrar\n").strip()
     if seccion.lower() == "1" or seccion.lower() == "almacen":
         Almacen.menu_almacen()
 
@@ -38,7 +38,15 @@ while True:
             historial_compras.append(registrar_compra)
         else:
             continue
-    elif seccion.lower() == "4" or seccion.lower().lower() == "cerrar":
+    elif seccion.lower() == "4" or seccion.lower() == "historial de ventas":
+        print("==historial de ventas==")
+        for venta in historial_compras:
+            print(venta)
+    elif seccion.lower() == "5" or seccion.lower() = "historial de ventas":
+        print("==historial de ventas==")
+        for compra in historial_compras:
+            print(compra)
+    elif seccion.lower() == "6" or seccion.lower().lower() == "cerrar":
         break
 
     else:

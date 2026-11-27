@@ -27,7 +27,7 @@ def mostrar_producto(producto):
 def agregar_producto():
     while True:
         while True:
-            nombre = input("Ingrese el nombre del producto: (si  no deseas agregar algo escribe 'salir' o 'x')").strip()
+            nombre = input("Ingrese el nombre del producto (si  no deseas agregar algo escribe 'salir' o 'x'): ").strip()
             if len(nombre) > 0:
                 break
             print("El nombre no puede estar vacío. Inténtalo de nuevo.")
@@ -283,8 +283,9 @@ def menu_almacen():
       "\n2. Visualizar el inventario. \n"
       "3. Editar categorias. "
       "\n4. Buscar producto. "
-      "\n5. Desactivar producto o categoria."
-      "\n6. Salir" )
+      "\n5. Desactivar producto."
+      "\n6. Activar producto"
+      "\n7. Salir" )
     print("=" * 30)
 
     poco_stock()

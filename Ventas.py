@@ -36,12 +36,15 @@ def venta():
                 "datos_pago" : datos_pago,
             }
             restar_existencias(carrito_compras)
+
             return venta_realizada
         elif finalizar_compra.upper() == "C":
             continue
         else:
             carrito_compras.clear()
             return None
+
+
 
 def armar_carrito(carrito):
     while True:
@@ -177,6 +180,8 @@ def metodo_pago(total_compra):
             pago["monto_recibido"] = monto_recibido
             pago["cambio"] = cambio
             pago["metodo_pago"] = "Efectivo"
+            print(f"Monto recibido: {pago['monto_recibido']}")
+            print(f"Cambio: {pago['cambio']}")
             return pago
         elif metodo == "2":
             pago["monto_recibido"] = total_compra
